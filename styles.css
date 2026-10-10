@@ -1,0 +1,100 @@
+/* styles.css - Vietnamese Traditional Costume Studio - Phong Cách Lạc Hồng & Full Screen */
+:root {
+  --top-h: 88px;
+  --left-w: 330px;
+  --right-w: 420px;
+  
+  /* Bảng màu Lạc Hồng Cổ Truyền (Đỏ Chu Sa, Vàng Đồng Đông Sơn, Nâu Sơn Mài Trầm) */
+  --bg-lac-hong-dark: #120b0a;
+  --bg-lac-hong-deep: #0e0706;
+  --panel-lac-hong: #1a1110;
+  --panel-lac-hong-2: #241615;
+  --panel-lac-hong-card: #2e1d1b;
+  --text-lac-hong: #fdf6ec;
+  --text-lac-hong-muted: #bfaea0;
+  --border-lac-hong: rgba(212, 163, 89, 0.18);
+  --border-lac-hong-hover: rgba(212, 163, 89, 0.45);
+  --accent-gold-dongson: #d4a359;
+  --accent-gold-light: #f5cf89;
+  --accent-red-son: #9e1b1b;
+  --accent-red-bright: #c83828;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html,
+body,
+#root {
+  width: 100vw;
+  height: 100vh;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  background-color: var(--bg-lac-hong-dark);
+  color: var(--text-lac-hong);
+  font-family: 'Nunito', Inter, Roboto, Arial, sans-serif;
+}
+
+/* 100% Full Screen Responsive Shell: Chiếm trọn màn hình laptop và desktop */
+.app-shell {
+  width: 100vw !important;
+  height: 100vh !important;
+  max-width: 100vw !important;
+  max-height: 100vh !important;
+  display: grid;
+  grid-template-rows: var(--top-h) 1fr;
+  grid-template-columns: var(--left-w) 1fr var(--right-w);
+  grid-template-areas:
+    "top top top"
+    "left center right";
+  gap: 10px;
+  padding: 10px;
+  background: radial-gradient(circle at 50% 15%, #241412 0%, #150c0b 60%, #0d0706 100%);
+  overflow: hidden;
+}
+
+.top-panel {
+  grid-area: top;
+}
+.left-panel {
+  grid-area: left;
+  overflow-y: auto;
+}
+.center-panel {
+  grid-area: center;
+  position: relative;
+}
+.right-panel {
+  grid-area: right;
+  overflow-y: auto;
+}
+
+.panel {
+  background: var(--panel-lac-hong);
+  border: 1px solid var(--border-lac-hong);
+  border-radius: 18px;
+}
+
+/* Custom Minimalist Lạc Hồng Scrollbar */
+.custom-scrollbar::-webkit-scrollbar,
+::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+.custom-scrollbar::-webkit-scrollbar-track,
+::-webkit-scrollbar-track {
+  background: rgba(18, 11, 10, 0.6);
+}
+.custom-scrollbar::-webkit-scrollbar-thumb,
+::-webkit-scrollbar-thumb {
+  background: rgba(212, 163, 89, 0.25);
+  border-radius: 9999px;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb:hover,
+::-webkit-scrollbar-thumb:hover {
+  background: #d4a359;
+}

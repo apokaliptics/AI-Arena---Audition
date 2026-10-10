@@ -1,0 +1,6 @@
+{
+  "name": "SẮC VIỆT - Heritage Avatar Studio",
+  "description": "Hệ thống UV Template 2D & Avatar 3D trang phục 54 dân tộc Việt Nam với AI Gemini phân tích văn hóa di sản.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

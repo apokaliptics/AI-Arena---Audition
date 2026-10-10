@@ -1,0 +1,48 @@
+@import "tailwindcss";
+
+@layer base {
+  body {
+    font-family: "Nunito", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    background-color: #120b0a;
+    color: #fdf6ec;
+  }
+}
+
+/* Minimalist Lạc Hồng scrollbars */
+::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+::-webkit-scrollbar-track {
+  background: #140d0c;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(212, 163, 89, 0.25);
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #d4a359;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fadeIn {
+  animation: fadeIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.font-mystical {
+  font-family: 'Charm', 'Lora', Georgia, serif;
+}
+
+.font-heritage {
+  font-family: 'Lora', 'Playfair Display', Georgia, serif;
+}
