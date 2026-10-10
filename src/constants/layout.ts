@@ -16,6 +16,7 @@ export const LAYOUT = {
 
 export type LeftPanelSection =
   | 'overview'    // Điều chỉnh tổng thể
+  | 'map'         // Bản đồ phân bố 54 dân tộc & cương vực
   | 'hierarchy'   // Cây chức năng
   | 'avatar'      // Nhân vật & Tỷ lệ
   | 'wardrobe'    // Trang phục & Phụ kiện

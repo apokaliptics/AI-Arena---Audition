@@ -36,7 +36,7 @@ export const Button: React.FC<ButtonProps> = ({
   ...props
 }) => {
   const base =
-    'inline-flex items-center justify-center font-bold tracking-wide transition-all duration-200 select-none cursor-pointer focus:outline-none disabled:opacity-40 disabled:cursor-not-allowed rounded-full active:scale-95';
+    'inline-flex items-center justify-center font-bold tracking-wide transition-all duration-200 select-none cursor-pointer focus:outline-none disabled:opacity-40 disabled:cursor-not-allowed rounded-full active:scale-95 whitespace-nowrap shrink-0';
 
   const variants = {
     primary:
@@ -54,10 +54,10 @@ export const Button: React.FC<ButtonProps> = ({
   };
 
   const sizes = {
-    xs: 'text-[11px] px-2.5 py-1 gap-1',
-    sm: 'text-xs px-3 py-1.5 gap-1.5',
-    md: 'text-sm px-4 py-2 gap-2',
-    lg: 'text-base px-6 py-2.5 gap-2.5',
+    xs: 'text-xs px-3.5 py-1.5 gap-2',
+    sm: 'text-xs px-4 py-2 gap-2.5',
+    md: 'text-sm px-5 py-2.5 gap-2.5',
+    lg: 'text-base px-6 py-3 gap-3',
   };
 
   return (
@@ -80,10 +80,10 @@ export interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> 
 }
 
 export const Input: React.FC<InputProps> = ({ label, error, className = '', ...props }) => (
-  <div className="flex flex-col gap-1 w-full">
+  <div className="flex flex-col gap-1.5 w-full">
     {label && <label className="text-xs font-semibold text-[#ebdcc9]">{label}</label>}
     <input
-      className={`bg-[#18100f] border border-[#d4a359]/25 rounded-xl px-3.5 py-1.5 text-sm text-[#fdf6ec] placeholder:text-zinc-600 focus:outline-none focus:border-[#d4a359] focus:ring-1 focus:ring-[#d4a359]/40 transition-all ${
+      className={`bg-[#18100f] border border-[#d4a359]/25 rounded-xl px-4 py-2 text-sm text-[#fdf6ec] placeholder:text-zinc-600 focus:outline-none focus:border-[#d4a359] focus:ring-1 focus:ring-[#d4a359]/40 transition-all ${
         error ? 'border-red-500' : ''
       } ${className}`}
       {...props}
@@ -92,7 +92,7 @@ export const Input: React.FC<InputProps> = ({ label, error, className = '', ...p
   </div>
 );
 
-// --- TAB COMPONENT WITH ROUNDED EDGES ---
+// --- TAB COMPONENT WITH ROUNDED EDGES & OPTIMAL SPACING ---
 export interface TabItem {
   id: string;
   label: string;
@@ -106,7 +106,7 @@ export const TabList: React.FC<{
   onChange: (id: string) => void;
   className?: string;
 }> = ({ tabs, activeId, onChange, className = '' }) => (
-  <div className={`flex items-center gap-1 p-1 bg-[#160e0d] border border-[#d4a359]/20 rounded-full ${className}`}>
+  <div className={`flex items-center gap-2 p-2 bg-[#160e0d] border border-[#d4a359]/20 rounded-full overflow-x-auto custom-scrollbar ${className}`}>
     {tabs.map((tab) => {
       const active = tab.id === activeId;
       const Icon = tab.icon;
@@ -114,16 +114,16 @@ export const TabList: React.FC<{
         <button
           key={tab.id}
           onClick={() => onChange(tab.id)}
-          className={`flex-1 flex items-center justify-center gap-1.5 py-1.5 px-3 rounded-full text-xs font-bold transition-all cursor-pointer ${
+          className={`shrink-0 flex items-center justify-center gap-2.5 py-2 px-4 rounded-full text-xs font-bold transition-all cursor-pointer whitespace-nowrap ${
             active
               ? 'bg-gradient-to-r from-[#9e1b1b] to-[#c83828] text-amber-50 shadow-md border border-[#e05344]/40'
               : 'text-[#bfaea0] hover:text-[#fdf6ec] hover:bg-[#241615]'
           }`}
         >
-          {Icon && <Icon className={`w-3.5 h-3.5 ${active ? 'text-[#f5cf89]' : ''}`} />}
-          <span>{tab.label}</span>
+          {Icon && <Icon className={`w-4 h-4 shrink-0 ${active ? 'text-[#f5cf89]' : ''}`} />}
+          <span className="whitespace-nowrap">{tab.label}</span>
           {tab.badge && (
-            <span className="text-[10px] px-1.5 py-0.2 rounded-full bg-red-600/40 text-red-200 font-mono">
+            <span className="text-[10px] px-2 py-0.5 rounded-full bg-red-600/40 text-red-200 font-mono shrink-0 ml-1">
               {tab.badge}
             </span>
           )}
@@ -133,7 +133,7 @@ export const TabList: React.FC<{
   </div>
 );
 
-// --- ACCORDION COMPONENT ---
+// --- ACCORDION COMPONENT WITH SPACIOUS PADDING & BREATHING ROOM ---
 export const Accordion: React.FC<{
   title: string;
   defaultOpen?: boolean;
@@ -145,27 +145,27 @@ export const Accordion: React.FC<{
   const [isOpen, setIsOpen] = useState(defaultOpen);
 
   return (
-    <div className={`border border-[#d4a359]/20 rounded-2xl bg-[#1b1211] overflow-hidden ${className}`}>
+    <div className={`border border-[#d4a359]/20 rounded-2xl bg-[#1b1211] overflow-hidden shadow-sm ${className}`}>
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="w-full flex items-center justify-between px-3.5 py-2.5 text-left bg-[#221614] hover:bg-[#2a1b19] transition-colors cursor-pointer"
+        className="w-full flex items-center justify-between px-4 py-3 text-left bg-[#221614] hover:bg-[#2a1b19] transition-colors cursor-pointer"
       >
-        <div className="flex items-center gap-2">
-          {Icon && <Icon className="w-4 h-4 text-[#d4a359]" />}
+        <div className="flex items-center gap-2.5">
+          {Icon && <Icon className="w-4 h-4 text-[#d4a359] shrink-0" />}
           <span className="text-xs font-bold text-[#fdf6ec] tracking-wide">{title}</span>
           {badge && (
-            <span className="text-[10px] px-2 py-0.5 rounded-full bg-[#d4a359]/15 text-[#f5cf89] font-mono border border-[#d4a359]/25">
+            <span className="text-[10px] px-2.5 py-0.5 rounded-full bg-[#d4a359]/15 text-[#f5cf89] font-mono border border-[#d4a359]/25">
               {badge}
             </span>
           )}
         </div>
         <ChevronDown
-          className={`w-4 h-4 text-[#bfaea0] transition-transform duration-200 ${
-            isOpen ? 'rotate-180 text-[#fdf6ec]' : ''
+          className={`w-4 h-4 text-[#bfaea0] shrink-0 transition-transform duration-200 ${
+            isOpen ? 'rotate-180 text-[#f5cf89]' : ''
           }`}
         />
       </button>
-      {isOpen && <div className="p-3 text-xs text-[#ebdcc9]">{children}</div>}
+      {isOpen && <div className="p-4 text-xs text-[#ebdcc9] leading-relaxed">{children}</div>}
     </div>
   );
 };

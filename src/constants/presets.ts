@@ -51,6 +51,70 @@ export const UV_COORDS = {
 
 export const PRESET_OUTFITS: PresetOutfit[] = [
   {
+    id: 'dong_son_au_lac',
+    name: 'Y Phục Lạc Vũ & Trống Đồng Đông Sơn',
+    ethnicity: 'Đông Sơn - Văn Lang (Thời Hùng Vương)',
+    era: 'TK VII TCN - TK II TCN (Đông Sơn)',
+    region: 'Lưu vực Sông Hồng - Phú Thọ, Phong Châu',
+    description: 'Trang phục thời dựng nước với họa tiết Mặt Trời Trống Đồng, đàn chim Lạc sải cánh, thắt lưng đồng và váy lông vũ xòe.',
+    primaryColor: '#B45309',
+    accentColor: '#F59E0B',
+    suggestedAccessories: ['kieng_bac'],
+    hasTunicFlaps: true,
+    drawTemplate: (ctx, width, height) => {
+      ctx.fillStyle = '#18181D';
+      ctx.fillRect(0, 0, width, height);
+
+      // Skirt & Leg fabric: Dark earth ochre
+      ctx.fillStyle = '#78350F';
+      ctx.fillRect(UV_COORDS.legL.x, UV_COORDS.legL.y, UV_COORDS.legL.w, UV_COORDS.legL.h);
+      ctx.fillRect(UV_COORDS.legR.x, UV_COORDS.legR.y, UV_COORDS.legR.w, UV_COORDS.legR.h);
+
+      // Torso Cluster: Bronze Gold & Crimson
+      ctx.fillStyle = '#92400E';
+      ctx.fillRect(UV_COORDS.torso.x, UV_COORDS.torso.y, UV_COORDS.torso.w, UV_COORDS.torso.h);
+
+      // Bronze Drum Sun on Chest
+      drawMotifStamp(ctx, 'bronze_drum', 432, 230, 80, '#F59E0B');
+      // Flying Lac Bird on back
+      drawMotifStamp(ctx, 'bird_lac', 672, 230, 75, '#F59E0B');
+
+      // Vòng kiềng cổ & viền ngực
+      ctx.strokeStyle = '#F59E0B';
+      ctx.lineWidth = 5;
+      ctx.beginPath();
+      ctx.arc(432, 100, 36, 0, Math.PI);
+      ctx.stroke();
+
+      // Thắt lưng đồng Đông Sơn
+      ctx.fillStyle = '#D97706';
+      ctx.fillRect(UV_COORDS.torso.x, 380, UV_COORDS.torso.w, 40);
+
+      // Vạt váy lông vũ xòe
+      ctx.fillStyle = '#B45309';
+      ctx.fillRect(UV_COORDS.skirtFront.x, UV_COORDS.skirtFront.y, UV_COORDS.skirtFront.w, UV_COORDS.skirtFront.h);
+      ctx.fillRect(UV_COORDS.skirtBack.x, UV_COORDS.skirtBack.y, UV_COORDS.skirtBack.w, UV_COORDS.skirtBack.h);
+
+      // Feather strokes on skirt hem
+      ctx.fillStyle = '#F59E0B';
+      for (let x = UV_COORDS.skirtFront.x; x < UV_COORDS.skirtFront.x + UV_COORDS.skirtFront.w; x += 22) {
+        ctx.beginPath();
+        ctx.moveTo(x, 930);
+        ctx.lineTo(x + 11, 990);
+        ctx.lineTo(x + 22, 930);
+        ctx.fill();
+      }
+
+      // Sleeves
+      ctx.fillStyle = '#92400E';
+      ctx.fillRect(UV_COORDS.armL.x, UV_COORDS.armL.y, UV_COORDS.armL.w, UV_COORDS.armL.h);
+      ctx.fillRect(UV_COORDS.armR.x, UV_COORDS.armR.y, UV_COORDS.armR.w, UV_COORDS.armR.h);
+      ctx.fillStyle = '#F59E0B';
+      ctx.fillRect(UV_COORDS.armL.x, UV_COORDS.armL.cuffY, UV_COORDS.armL.w, 24);
+      ctx.fillRect(UV_COORDS.armR.x, UV_COORDS.armR.cuffY, UV_COORDS.armR.w, 24);
+    },
+  },
+  {
     id: 'kinh_ao_dai_ngu_than',
     name: 'Áo Dài Ngũ Thân Truyền Thống',
     ethnicity: 'Kinh (Áo Dài / Ngũ Thân)',
@@ -60,6 +124,7 @@ export const PRESET_OUTFITS: PresetOutfit[] = [
     primaryColor: '#DC2626',
     accentColor: '#FAFAFA',
     suggestedAccessories: ['man_doi_dau', 'kieng_bac'],
+    hasTunicFlaps: true,
     drawTemplate: (ctx, width, height) => {
       // Base background
       ctx.fillStyle = '#18181D';
@@ -448,9 +513,21 @@ export const PRESET_OUTFITS: PresetOutfit[] = [
 ];
 
 export const ERA_DEFAULT_OUTFIT: Record<string, string> = {
-  hung_vuong: 'ede_tay_nguyen',
+  hung_vuong: 'dong_son_au_lac',
   ly_tran: 'tay_tho_cam_cham',
   le_so: 'thai_ao_com',
   nguyen: 'kinh_ao_dai_ngu_than',
   hien_dai: 'kinh_nhat_binh_hue',
+};
+
+export const OUTFIT_TO_ERA: Record<string, string> = {
+  dong_son_au_lac: 'hung_vuong',
+  kinh_ao_dai_ngu_than: 'nguyen',
+  kinh_nhat_binh_hue: 'nguyen',
+  thai_ao_com: 'le_so',
+  tay_tho_cam_cham: 'ly_tran',
+  hmong_lanh_tho_cam: 'hung_vuong',
+  ede_tay_nguyen: 'hung_vuong',
+  cham_kate: 'nguyen',
+  custom_blank_template: 'hien_dai',
 };

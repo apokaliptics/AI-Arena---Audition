@@ -1,5 +1,5 @@
 /**
- * Vietnamese Traditional Costume Studio - Senior 2D Layer & Canvas Editor
+ * SẮC VIỆT - Heritage Avatar Studio - 2D Layer & Canvas Editor
  * Bộ công cụ chỉnh sửa 2D layer tương tự Photoshop mini chạy trực tiếp trong browser:
  * 1. Mẫu & Tải ảnh (Template & Upload + Free Transform Ctrl+T)
  * 2. Vẽ trực tiếp (Draw, Brush, Eraser, Fill, Eyedropper, Heritage Palette)
@@ -200,17 +200,8 @@ export const LayerEditorPanel: React.FC<LayerEditorPanelProps> = ({
 
     renderLayer1Mask();
 
-    // Check if there is cached draft for this outfit
-    const draftKey = `garment_draft_${outfitId}`;
-    miniCache.get<any>('layers', draftKey).then((cached) => {
-      if (cached && Array.isArray(cached.layers) && cached.layers.length > 0) {
-        restoreLayersFromData(cached.layers);
-        showToast('info', `Đã tự động khôi phục bản nháp trước đó.`);
-      } else {
-        // Initial clean state: Base Garment Fabric Layer + 1 Drawing Layer
-        initDefaultLayers();
-      }
-    });
+    // Initialize clean state for the selected outfit: Base Garment Fabric Layer + 1 Drawing Layer
+    initDefaultLayers();
 
     loadSavedProjects();
   }, [outfitId]);
@@ -1225,8 +1216,8 @@ export const LayerEditorPanel: React.FC<LayerEditorPanelProps> = ({
       {/* ============================================================== */}
       {/* 1. TOP SEGMENTED CONTROL: 3 CHẾ ĐỘ CHÍNH */}
       {/* ============================================================== */}
-      <div className="p-2.5 bg-[#1e1312] border-b border-[#d4a359]/20 shrink-0">
-        <div className="grid grid-cols-3 gap-1.5 p-1 bg-[#140d0c] rounded-full border border-[#d4a359]/25">
+      <div className="p-3 bg-[#1e1312] border-b border-[#d4a359]/20 shrink-0">
+        <div className="grid grid-cols-3 gap-2 p-1.5 bg-[#140d0c] rounded-full border border-[#d4a359]/25">
           {[
             { id: 'template', label: 'Mẫu & Tải ảnh', icon: Upload },
             { id: 'draw', label: 'Vẽ Tay', icon: Paintbrush },
@@ -1242,13 +1233,13 @@ export const LayerEditorPanel: React.FC<LayerEditorPanelProps> = ({
                     setIsTransforming(true);
                   }
                 }}
-                className={`flex items-center justify-center gap-1.5 py-1.5 px-3 rounded-full text-xs font-bold transition-all cursor-pointer ${
+                className={`flex items-center justify-center gap-2.5 py-2 px-3.5 rounded-full text-xs font-bold transition-all cursor-pointer whitespace-nowrap ${
                   isActive
                     ? 'bg-gradient-to-r from-[#9e1b1b] via-[#bd2c2c] to-[#c83828] text-amber-50 shadow-md border border-[#e05344]/40'
                     : 'text-[#bfaea0] hover:text-[#fdf6ec] hover:bg-[#241615]'
                 }`}
               >
-                <tab.icon className={`w-3.5 h-3.5 ${isActive ? 'text-[#f5cf89]' : ''}`} />
+                <tab.icon className={`w-4 h-4 shrink-0 ${isActive ? 'text-[#f5cf89]' : ''}`} />
                 <span>{tab.label}</span>
               </button>
             );
@@ -1925,9 +1916,9 @@ export const LayerEditorPanel: React.FC<LayerEditorPanelProps> = ({
 
         <button
           onClick={handleBakeAndApplyTo3D}
-          className="w-full py-3 px-5 rounded-full bg-gradient-to-r from-[#9e1b1b] via-[#bd2c2c] to-[#d4a359] hover:from-[#b12222] hover:to-[#e6ba64] text-amber-50 font-black text-xs uppercase tracking-wider shadow-[0_4px_18px_rgba(189,44,44,0.45)] border border-[#e05344]/50 transition-all cursor-pointer flex items-center justify-center gap-2 transform active:scale-95"
+          className="w-full py-3.5 px-6 rounded-full bg-gradient-to-r from-[#9e1b1b] via-[#bd2c2c] to-[#d4a359] hover:from-[#b12222] hover:to-[#e6ba64] text-amber-50 font-black text-xs uppercase tracking-wider shadow-[0_4px_18px_rgba(189,44,44,0.45)] border border-[#e05344]/50 transition-all cursor-pointer flex items-center justify-center gap-2.5 transform active:scale-95"
         >
-          <Sparkles className="w-4 h-4 text-amber-200" />
+          <Sparkles className="w-4 h-4 text-amber-200 shrink-0" />
           <span>Xác Nhận & Áp Dụng Lên 3D Avatar</span>
         </button>
       </div>

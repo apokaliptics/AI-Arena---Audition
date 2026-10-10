@@ -9,6 +9,15 @@ export interface ThreeHeritageCanvasRef {
   resetView: () => void;
   updateFaceTexture: (imageUrl: string) => void;
   updateSkinColor: (hex: string) => void;
+  focusPart: (part: 'all' | 'face' | 'torso' | 'skirt') => void;
+  updateClothTexture: (canvas: HTMLCanvasElement) => void;
+  zoom: (delta: number) => void;
+  toggleWalk: () => boolean;
+  toggleAutoRotate: () => boolean;
+  adjustModelScale: (delta: number) => void;
+  getModelScale: () => number;
+  isWalking: () => boolean;
+  isRotating: () => boolean;
 }
 
 interface ThreeHeritageCanvasProps {
@@ -123,6 +132,7 @@ export const ThreeHeritageCanvas = forwardRef<ThreeHeritageCanvasRef, ThreeHerit
     const controlsRef = useRef<OrbitControls | null>(null);
 
     const canvasTextureRef = useRef<THREE.CanvasTexture | null>(null);
+    const clothMaterialRef = useRef<THREE.MeshStandardMaterial | null>(null);
     const skinMaterialRef = useRef<THREE.MeshStandardMaterial | null>(null);
     const faceDecalRef = useRef<THREE.Mesh | null>(null);
     const frontFlapRef = useRef<THREE.Mesh | null>(null);
@@ -183,11 +193,45 @@ export const ThreeHeritageCanvas = forwardRef<ThreeHeritageCanvasRef, ThreeHerit
       },
       resetView: () => {
         if (cameraRef.current && controlsRef.current && pivotsRef.current) {
-          cameraRef.current.position.set(0, 1.45, 3.6);
-          controlsRef.current.target.set(0, 1.25, 0);
+          cameraRef.current.position.set(0, 1.35, 3.85);
+          controlsRef.current.target.set(0, 1.1, 0);
           pivotsRef.current.torso.rotation.set(0, 0, 0);
           controlsRef.current.update();
           setIsAutoRotate(false);
+        }
+      },
+      focusPart: (part: 'all' | 'face' | 'torso' | 'skirt') => {
+        if (!cameraRef.current || !controlsRef.current) return;
+        const cam = cameraRef.current;
+        const ctrl = controlsRef.current;
+        switch (part) {
+          case 'face':
+            cam.position.set(0, 1.82, 1.5);
+            ctrl.target.set(0, 1.78, 0);
+            break;
+          case 'torso':
+            cam.position.set(0, 1.45, 2.1);
+            ctrl.target.set(0, 1.40, 0);
+            break;
+          case 'skirt':
+            cam.position.set(0, 0.75, 2.4);
+            ctrl.target.set(0, 0.70, 0);
+            break;
+          case 'all':
+          default:
+            cam.position.set(0, 1.35, 3.85);
+            ctrl.target.set(0, 1.1, 0);
+            break;
+        }
+        ctrl.update();
+      },
+      updateClothTexture: (canvas: HTMLCanvasElement) => {
+        if (!canvasTextureRef.current) return;
+        canvasTextureRef.current.image = canvas;
+        canvasTextureRef.current.needsUpdate = true;
+        if (clothMaterialRef.current) {
+          clothMaterialRef.current.map = canvasTextureRef.current;
+          clothMaterialRef.current.needsUpdate = true;
         }
       },
       updateFaceTexture: (imgUrl: string) => {
@@ -204,6 +248,25 @@ export const ThreeHeritageCanvas = forwardRef<ThreeHeritageCanvasRef, ThreeHerit
           skinMaterialRef.current.color.set(hex);
         }
       },
+      zoom: (delta: number) => {
+        handleZoom(delta);
+      },
+      toggleWalk: () => {
+        const next = !isWalkAnimation;
+        setIsWalkAnimation(next);
+        return next;
+      },
+      toggleAutoRotate: () => {
+        const next = !isAutoRotate;
+        setIsAutoRotate(next);
+        return next;
+      },
+      adjustModelScale: (delta: number) => {
+        handleAdjustModelScale(delta);
+      },
+      getModelScale: () => modelScale,
+      isWalking: () => isWalkAnimation,
+      isRotating: () => isAutoRotate,
     }));
 
     // Setup function for studio lighting: balanced, bright, no black spots
@@ -332,7 +395,7 @@ export const ThreeHeritageCanvas = forwardRef<ThreeHeritageCanvasRef, ThreeHerit
 
       // 2. Camera Setup
       const camera = new THREE.PerspectiveCamera(36, width / height, 0.1, 100);
-      camera.position.set(0, 1.45, 3.6);
+      camera.position.set(0, 1.35, 3.85);
       cameraRef.current = camera;
 
       // 3. Renderer Setup
@@ -353,7 +416,7 @@ export const ThreeHeritageCanvas = forwardRef<ThreeHeritageCanvasRef, ThreeHerit
       const controls = new OrbitControls(camera, renderer.domElement);
       controls.enableDamping = true;
       controls.dampingFactor = 0.05;
-      controls.target.set(0, 1.25, 0);
+      controls.target.set(0, 1.1, 0);
       controls.minDistance = 1.4;
       controls.maxDistance = 6.0;
       controls.maxPolarAngle = Math.PI / 2 + 0.02;
@@ -403,6 +466,7 @@ export const ThreeHeritageCanvas = forwardRef<ThreeHeritageCanvasRef, ThreeHerit
         roughness: 0.58,
         metalness: 0.08,
       });
+      clothMaterialRef.current = clothMaterial;
 
       const skinMat = new THREE.MeshStandardMaterial({
         color: skinColor || '#F5CBAB',
@@ -874,8 +938,14 @@ export const ThreeHeritageCanvas = forwardRef<ThreeHeritageCanvasRef, ThreeHerit
     // Update texture when canvas changes
     useEffect(() => {
       if (!canvasTextureRef.current || !textureCanvas) return;
-      canvasTextureRef.current.image = textureCanvas;
+      if (canvasTextureRef.current.image !== textureCanvas) {
+        canvasTextureRef.current.image = textureCanvas;
+      }
       canvasTextureRef.current.needsUpdate = true;
+      if (clothMaterialRef.current) {
+        clothMaterialRef.current.map = canvasTextureRef.current;
+        clothMaterialRef.current.needsUpdate = true;
+      }
     }, [textureCanvas, textureVersion]);
 
     // Update skin tone
@@ -953,106 +1023,6 @@ export const ThreeHeritageCanvas = forwardRef<ThreeHeritageCanvasRef, ThreeHerit
     return (
       <div className="relative w-full h-full bg-[#0E0E12] select-none overflow-hidden">
         <div ref={containerRef} className="w-full h-full cursor-grab active:cursor-grabbing" />
-
-        {/* Top Status & Scale Indicator */}
-        <div className="absolute top-3 left-3 flex items-center gap-2 pointer-events-none z-10">
-          <div className="bg-[#18181D]/85 backdrop-blur-md px-2.5 py-1 rounded-md border border-[#2D2D36] shadow-md flex items-center gap-1.5">
-            <span className="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse" />
-            <span className="text-[10px] font-medium text-zinc-300 tracking-wider uppercase">
-              Nhân Hình 3D Sắc Việt ({Math.round(modelScale * 100)}%)
-            </span>
-          </div>
-        </div>
-
-        {/* Bottom Control Dock: Walk, 360 Rotate, Model Scaling, Reset Camera - Stay on 1 Clean Row */}
-        <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex items-center gap-1.5 bg-[#1a1110]/95 backdrop-blur-md px-3 py-1.5 rounded-full border border-[#d4a359]/30 shadow-2xl z-10 whitespace-nowrap">
-          <button
-            onClick={() => setIsWalkAnimation(!isWalkAnimation)}
-            title="Bật/Tắt Animation Đi Bộ"
-            className={`flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-bold transition-all cursor-pointer ${
-              isWalkAnimation
-                ? 'bg-gradient-to-r from-[#9e1b1b] to-[#c83828] text-amber-100 shadow-[0_0_10px_rgba(189,44,44,0.5)] border border-[#e05344]/40'
-                : 'text-[#ebdcc9] hover:text-[#fdf6ec] hover:bg-[#2b1c1a]'
-            }`}
-          >
-            {isWalkAnimation ? <Pause className="w-3.5 h-3.5" /> : <Play className="w-3.5 h-3.5" />}
-            <span>{isWalkAnimation ? 'Dừng' : 'Đi Bộ'}</span>
-          </button>
-
-          <div className="w-[1px] h-3.5 bg-[#d4a359]/25 mx-0.5" />
-
-          <button
-            onClick={() => setIsAutoRotate(!isAutoRotate)}
-            title="Xoay tự động 360°"
-            className={`flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-bold transition-all cursor-pointer ${
-              isAutoRotate
-                ? 'bg-gradient-to-r from-[#c99846] to-[#b88530] text-[#140d0c] shadow-[0_0_10px_rgba(201,152,70,0.5)]'
-                : 'text-[#ebdcc9] hover:text-[#fdf6ec] hover:bg-[#2b1c1a]'
-            }`}
-          >
-            <RotateCw className={`w-3.5 h-3.5 ${isAutoRotate ? 'animate-spin' : ''}`} />
-            <span>360°</span>
-          </button>
-
-          <div className="w-[1px] h-3.5 bg-[#d4a359]/25 mx-0.5" />
-
-          {/* Model Scaling Buttons */}
-          <div className="flex items-center gap-1 px-1.5 py-0.5 rounded-full bg-[#120b0a] border border-[#d4a359]/25">
-            <button
-              onClick={() => handleAdjustModelScale(-0.1)}
-              title="Thu nhỏ nhân vật 3D"
-              className="p-1 rounded-full text-[#bfaea0] hover:text-[#fdf6ec] hover:bg-white/10 transition-colors cursor-pointer"
-            >
-              <Minimize2 className="w-3 h-3" />
-            </button>
-            <span className="text-[10px] font-mono font-bold text-[#f5cf89] px-1 min-w-[36px] text-center">
-              {Math.round(modelScale * 100)}%
-            </span>
-            <button
-              onClick={() => handleAdjustModelScale(0.1)}
-              title="Phóng to nhân vật 3D"
-              className="p-1 rounded-full text-[#bfaea0] hover:text-[#fdf6ec] hover:bg-white/10 transition-colors cursor-pointer"
-            >
-              <Maximize2 className="w-3 h-3" />
-            </button>
-          </div>
-
-          <div className="w-[1px] h-3.5 bg-[#d4a359]/25 mx-0.5" />
-
-          {/* Camera Zoom & Reset */}
-          <button
-            onClick={() => handleZoom(0.5)}
-            title="Camera lại gần"
-            className="p-1.5 rounded-full text-[#bfaea0] hover:text-[#fdf6ec] hover:bg-white/10 transition-colors cursor-pointer"
-          >
-            <ZoomIn className="w-3.5 h-3.5" />
-          </button>
-
-          <button
-            onClick={() => handleZoom(-0.5)}
-            title="Camera ra xa"
-            className="p-1.5 rounded-full text-[#bfaea0] hover:text-[#fdf6ec] hover:bg-white/10 transition-colors cursor-pointer"
-          >
-            <ZoomOut className="w-3.5 h-3.5" />
-          </button>
-
-          <button
-            onClick={() => {
-              if (cameraRef.current && controlsRef.current && pivotsRef.current) {
-                cameraRef.current.position.set(0, 1.45, 3.6);
-                controlsRef.current.target.set(0, 1.25, 0);
-                pivotsRef.current.torso.rotation.set(0, 0, 0);
-                controlsRef.current.update();
-                setIsAutoRotate(false);
-                setModelScale(1.0);
-              }
-            }}
-            title="Góc nhìn chính diện"
-            className="p-1.5 rounded-full text-[#d4a359] hover:text-white hover:bg-white/10 transition-colors cursor-pointer"
-          >
-            <Compass className="w-3.5 h-3.5" />
-          </button>
-        </div>
       </div>
     );
   }

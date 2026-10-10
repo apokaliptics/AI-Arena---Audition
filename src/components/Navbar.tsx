@@ -63,7 +63,7 @@ export const HISTORICAL_TIMELINE: TimelineEra[] = [
   {
     id: 'tay_bac_thai',
     eraName: 'Tây Bắc (Áo Cóm)',
-    period: 'Di Sản Ngàn Năm',
+    period: 'Tây Bắc Cổ Truyền',
     dynasty: 'Văn Hóa Bản Địa Tây Bắc',
     highlightDescription: 'Áo Cóm hàng khuy bướm Hàng Mác Bén, váy đen tuyền thắt lưng đỏ duyên dáng.',
     presetId: 'thai_ao_com',

@@ -1,12 +1,14 @@
 export type EthnicGroup =
   | 'Kinh (Áo Dài / Ngũ Thân)'
   | 'Kinh (Áo Nhật Bình Cung Đình)'
+  | 'Đông Sơn - Văn Lang (Thời Hùng Vương)'
   | 'Thái (Áo Cóm Khuy Bướm)'
   | 'Tày (Thổ Cẩm Chàm & Bạc)'
   | 'H\'Mông (Thổ Cẩm Hoa Văn Lanh)'
   | 'Ê-đê (Thổ Cẩm Lễ Hội Tây Nguyên)'
   | 'Chăm (Y Phục Cổ Truyền Katê)'
-  | 'Tùy Chỉnh (Custom)';
+  | 'Tùy Chỉnh (Custom)'
+  | string;
 
 export type AccessoryId = 'non_la' | 'man_doi_dau' | 'kieng_bac' | 'khan_pieu' | 'khan_dong' | 'quat_cung_dinh';
 
@@ -40,6 +42,7 @@ export interface PresetOutfit {
   primaryColor: string;
   accentColor: string;
   suggestedAccessories: AccessoryId[];
+  hasTunicFlaps?: boolean;
   drawTemplate: (ctx: CanvasRenderingContext2D, width: number, height: number) => void;
 }
 

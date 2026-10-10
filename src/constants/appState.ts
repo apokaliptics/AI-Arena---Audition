@@ -1,5 +1,5 @@
 /**
- * Vietnamese Traditional Costume Studio - App State Model
+ * SẮC VIỆT - Heritage Avatar Studio
  * Định nghĩa cấu trúc dữ liệu trung tâm chuẩn theo đặc tả kiến trúc.
  */
 
@@ -53,7 +53,7 @@ export interface AppStateModel {
     locale: string;
   };
   ui: {
-    activeLeftSection: 'overview' | 'hierarchy' | 'avatar' | 'wardrobe' | 'background';
+    activeLeftSection: 'overview' | 'map' | 'hierarchy' | 'avatar' | 'wardrobe' | 'background';
     activeRightMode: 'template' | 'draw' | 'layers' | 'library';
     selectedTreeId: string | null;
     modal: string | null;
@@ -180,12 +180,12 @@ export const INITIAL_APP_STATE: AppStateModel = {
   },
   wardrobe: {
     equipped: {
-      outfitId: 'kinh_ao_dai_ngu_than',
-      garmentIds: ['kinh_ao_dai_ngu_than'],
+      outfitId: 'dong_son_au_lac',
+      garmentIds: ['dong_son_au_lac'],
       accessories: {
         non_la: false,
         man_doi_dau: false,
-        kieng_bac: false,
+        kieng_bac: true,
         khan_pieu: false,
         khan_dong: false,
         quat_cung_dinh: false,
@@ -229,8 +229,8 @@ export const INITIAL_APP_STATE: AppStateModel = {
     redoStack: [],
   },
   timeline: {
-    selectedEraId: 'nguyen',
-    selectedCostumeId: 'kinh_ao_dai_ngu_than',
+    selectedEraId: 'hung_vuong',
+    selectedCostumeId: 'dong_son_au_lac',
     previewState: {},
     cache: {},
   },
